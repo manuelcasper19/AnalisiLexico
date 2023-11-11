@@ -70,6 +70,7 @@
                         <MudMenuItem OnClick="() => AsignarTextoBoton(1)">Reservadas</MudMenuItem>
                         <MudMenuItem OnClick="() => AsignarTextoBoton(2)">Errores</MudMenuItem>
                         <MudMenuItem OnClick="() => AsignarTextoBoton(3)">Identificadores</MudMenuItem>
+                        <MudMenuItem OnClick="() => AsignarTextoBoton(4)">Operadores</MudMenuItem>
                     </MudMenu>
                 </MudButtonGroup>
                 <MudSimpleTable Hover="true" Dense="true" FixedHeader="true" Style="@(true?"height:450px;":"")">
@@ -130,6 +131,16 @@
                                         </tr>
                                     }
                                     break;
+                                case "Operadores":
+
+                                    if (row.Contains("Operador"))
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@row</td>
+                                        </tr>
+                                    }
+                                    break;
                             } 
 
                            @*  <tr>
@@ -153,7 +164,7 @@
     public string ValorTextArea { get; set; }
     private string _archivoSeleccionado = "";
     private List<string> listaResultado = new List<string>();
-    private List<int> listaLineasError = new List<int>();
+    // private List<int> listaLineasError = new List<int>();
     private string resultadoFinal = "";
     private string _textoBotonGrupo = "Todo";
     //private lineas
@@ -198,19 +209,19 @@
                 //sacamos el resultado de la ultima fila, para mostrar aparte
                 resultadoFinal = listaResultado[listaResultado.Count - 1];
 
-                if (listaResultado != null)
-                {
-                    foreach (var resultado in listaResultado)
-                    {
-                        if (resultado.Contains("Error Lexico:"))
-                        {
-                            string numeroAlFinal = new string(resultado.TrimEnd().Reverse().TakeWhile(char.IsDigit).Reverse().ToArray());
-                            listaLineasError.Add(int.Parse(numeroAlFinal));
+                // if (listaResultado != null)
+                // {
+                //     foreach (var resultado in listaResultado)
+                //     {
+                //         if (resultado.Contains("Error Lexico:"))
+                //         {
+                //             string numeroAlFinal = new string(resultado.TrimEnd().Reverse().TakeWhile(char.IsDigit).Reverse().ToArray());
+                //             listaLineasError.Add(int.Parse(numeroAlFinal));
 
-                            Console.WriteLine(numeroAlFinal);
-                        }
-                    }
-                }
+                //             Console.WriteLine(numeroAlFinal);
+                //         }
+                //     }
+                // }
 
 
             }
@@ -314,6 +325,9 @@
                     break;
                 case 3:
                     _textoBotonGrupo = "Identificadores";
+                    break;
+                case 4:
+                    _textoBotonGrupo = "Operadores";
                     break;
             }
             

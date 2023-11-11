@@ -1,20 +1,53 @@
-Comentario: #esta es una clase basica, en la linea 1
-Palabra reservada: _clase, en la linea 2
+Palabra reservada: _publico, en la linea 1
+Palabra reservada: _clase, en la linea 1
+Identificador: CalculadoraAreas, en la linea 1
+Palabra reservada: {, en la linea 1
+Palabra reservada: _publico, en la linea 2
+Palabra reservada: _vacio, en la linea 2
+Identificador: principal, en la linea 2
+Palabra reservada: (, en la linea 2
+Palabra reservada: ), en la linea 2
 Palabra reservada: {, en la linea 2
-Error Lexico: $,  en la linea 2 
-Palabra reservada: _principal, en la linea 3
-Palabra reservada: (, en la linea 3
-Palabra reservada: ), en la linea 3
-Palabra reservada: {, en la linea 3
+Palabra reservada: _decision, en la linea 3
+Identificador: respuesta, en la linea 3
+Operador Asignacion: =, en la linea 3
+Palabra reservada: _verdadero, en la linea 3
+Delimitador: ;, en la linea 3
 Palabra reservada: _entero, en la linea 4
+Identificador: respuestaFinal, en la linea 4
 Operador Asignacion: =, en la linea 4
-Entero: -1, en la linea 4
+Entero: 0, en la linea 4
 Delimitador: ;, en la linea 4
-Error Lexico: $,  en la linea 4 
-Palabra reservada: _real, en la linea 5
-Operador Asignacion: =, en la linea 5
-Real: 0.4, en la linea 5
-Delimitador: ;, en la linea 5
-Palabra reservada: }, en la linea 6
-Palabra reservada: }, en la linea 7
-Lineas analizadas 7, Errores encontrados 2
+Error Lexico: _,  en la linea 5 
+Identificador: hacermientras, en la linea 5
+Palabra reservada: {, en la linea 5
+Palabra reservada: _entero, en la linea 6
+Identificador: opcion, en la linea 6
+Operador Asignacion: =, en la linea 6
+Palabra reservada: _entrada, en la linea 6
+Palabra reservada: (, en la linea 6
+Identificador Cadena: "Elige una figura geométrica para calcular su área:  
+            					1. Cuadrado,  
+            					2. Triángulo,  
+            					3. Círculo,  
+            					4. Salir", en la linea 10
+Delimitador: ,, en la linea 10
+Palabra reservada: _entero, en la linea 10
+Palabra reservada: ), en la linea 10
+Delimitador: ;, en la linea 10
+Palabra reservada: _si, en la linea 11
+Palabra reservada: (, en la linea 11
+Identificador: opcion, en la linea 11
+Operador comparacion: ==, en la linea 11
+Entero: 4, en la linea 11
+Palabra reservada: ), en la linea 11
+Palabra reservada: {, en la linea 11
+Palabra reservada: _imprime, en la linea 12
+Palabra reservada: (, en la linea 12
+Identificador Cadena: "¡Hasta luego!", en la linea 12
+Palabra reservada: ), en la linea 12
+Delimitador: ;, en la linea 12
+Error Lexico: _,  en la linea 13 
+Identificador: ro, en la linea 13
+Palabra reservada: }, en la linea 15
+Lineas analizadas 16, Errores encontrados 2

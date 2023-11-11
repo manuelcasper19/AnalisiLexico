@@ -1,0 +1,15 @@
+_publico _clase CalculadoraAreas {
+    _publico _vacio principal() {  
+        _decision respuesta = _verdadero; 
+        _entero respuestaFinal = 0;  
+        _ hacermientras{  
+            _entero opcion =_entrada("Elige una figura geométrica para calcular su área:  
+            					1. Cuadrado,  
+            					2. Triángulo,  
+            					3. Círculo,  
+            					4. Salir", _entero);  
+            _si (opcion == 4) {  
+                _imprime("¡Hasta luego!");  
+                _ro
+    
+}

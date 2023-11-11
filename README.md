@@ -1,2 +1,2 @@
 # AnalisiLexico
-##Proyecto que implementa un alisis léxico en Flex
+#Proyecto que implementa un alisis léxico en Flex

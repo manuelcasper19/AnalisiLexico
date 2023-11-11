@@ -1,0 +1,15 @@
+Comentario: #un comentario, en la linea 1
+Palabra reservada: _clase, en la linea 2
+Identificador: vida, en la linea 2
+Palabra reservada: {, en la linea 2
+Palabra reservada: _entero, en la linea 3
+Operador Asignacion: =, en la linea 3
+Entero: 10, en la linea 3
+Delimitador: ;, en la linea 3
+Palabra reservada: _real, en la linea 4
+Operador Asignacion: =, en la linea 4
+Entero: 20, en la linea 4
+Delimitador: ;, en la linea 4
+Error Lexico: $,  en la linea 5 
+Palabra reservada: }, en la linea 7
+Lineas analizadas 8, Errores encontrados 1

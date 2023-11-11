@@ -1,0 +1,14 @@
+{inicio del programa}
+begin
+_entero
+c:=18.25
+a := b + c;
+{instrucion si}
+if x<18 then
+  x := x + 3.14;
+else
+  x:= x - 2.79;
+end
+write(x, a);
+end
+

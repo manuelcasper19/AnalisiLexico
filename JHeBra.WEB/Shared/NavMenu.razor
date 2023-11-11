@@ -1,0 +1,92 @@
+﻿@inject HttpClient Http
+@inject JHeBra.WEB.Helper.AppState AppState
+@inject ISnackbar Snackbar
+
+<MudSnackbarProvider />
+<MudNavMenu Class="mud-width-full">
+    <MudPaper Width="250px" Class="py-3 mb-4" Elevation="0">
+        <MudNavMenu >
+            <MudNavGroup Title="Archivos" @bind-Expanded="_isExpanded" > 
+                @foreach (var archivo in archivos)
+                {
+                    <MudNavLink  OnClick="() => CargarTextoDeArchivo(archivo) "
+                                Class="@((archivo == AppState.archivoSeleccionado) ? "menu-seleccionado" : "")" 
+                                Icon="@Icons.Material.Filled.Class">
+                                @archivo
+                     </MudNavLink>
+                }
+            </MudNavGroup>
+        </MudNavMenu>
+    </MudPaper>
+</MudNavMenu>
+@* <div>
+    @if (!string.IsNullOrEmpty(_text))
+    {
+        <h4>Contenido del Archivo:</h4>
+        <textarea rows="10" readonly>@_text</textarea>
+    }
+</div> *@
+
+
+@code {
+    private bool _isExpanded = true;
+    private string _text = "";
+    private List<string> archivos = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await iniciarActualizacionArchivos();
+
+    }
+
+    private async Task iniciarActualizacionArchivos()
+    {
+        try
+        {
+            // Realizar una solicitud HTTP al backend para obtener la lista de archivos
+            await ActualizarListaArchivos();
+            // Suscribir al evento OnArchivosChanged para actualizar la lista cuando cambie
+            AppState.OnArchivoCambio += async () => await ActualizarListaArchivos();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Error al obtener la lista de archivos: " + ex.Message, Severity.Error, config => { config.VisibleStateDuration = 3000; });
+            return;
+            
+        }
+    }
+
+    private async Task ActualizarListaArchivos()
+    {
+        try
+        {
+           
+            archivos = await Http.GetFromJsonAsync<List<string>>("/api/lexico");
+            
+            StateHasChanged(); 
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Error al obtener la lista de archivos: " + ex.Message, Severity.Error, config => { config.VisibleStateDuration = 3000; });
+            return;
+            
+        }
+    }
+
+    private async Task CargarTextoDeArchivo(string nombreArchivo)
+    {
+        try
+        {
+            // Realizar una solicitud HTTP al backend para obtener el contenido del archivo
+            var contenido =  await Http.GetStringAsync($"/api/lexico/archivo/{nombreArchivo}");
+            AppState.AsignarValorTexto(contenido, nombreArchivo);
+         
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Error al obtener el contenido del archivo: " + ex.Message, Severity.Error, config => { config.VisibleStateDuration = 3000; });
+            return;
+           
+        }
+    }
+}

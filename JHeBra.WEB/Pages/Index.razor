@@ -1,0 +1,324 @@
+﻿@page "/"
+@inject JHeBra.WEB.Helper.AppState AppState
+@inject HttpClient Http
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@using Microsoft.AspNetCore.Components
+@using System.Net.Http.Json
+
+<PageTitle>Lexico</PageTitle>
+<MudSnackbarProvider />
+
+<MudGrid Class="d-flex">
+    <MudItem xs="8">
+        <MudCard Class="text-center" >
+    <MudCardContent>
+        <MudButton Variant="Variant.Filled" 
+                   Color="Color.Dark" 
+                   Class="m-1"
+                   StartIcon="@Icons.Material.Filled.Code" 
+                   OnClick="Analizar">
+                   <MudText>Analisis Léxico</MudText>
+         </MudButton>
+        <MudButton @onclick="AbrirVentanaDialogo" 
+                   Variant="Variant.Filled" 
+                   Color="Color.Primary" 
+                   StartIcon="@Icons.Material.Filled.FileOpen"
+                   Class="m-1">
+                    <MudText>Nuevo Archivo</MudText>
+        </MudButton>
+        <MudButton Variant="Variant.Filled" 
+                   StartIcon="@Icons.Material.Filled.Delete" 
+                   Color="Color.Error"
+                   Class="m-1"
+                   @onclick="EliminarArchivo">
+                   <MudText>Borrar Archivo</MudText>
+         </MudButton>
+        @* <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Clear" Color="Color.Warning"><MudText>Limpiar Editor</MudText></MudButton> *@
+        <MudTextField  @bind-Value="ValorTextArea" 
+                       Variant="Variant.Outlined" 
+                       Margin="Margin.Dense" 
+                       Lines="20"
+                      DisableUnderLine="true">
+            @* @AppState.valorTextArea *@
+      @*       @foreach (var resultado in listaResultado)
+            {
+                @resultado
+            } *@
+         </MudTextField>
+
+                <br />
+                <MudText>
+                    @resultadoFinal
+                </MudText>
+    </MudCardContent>
+    <MudCardActions>
+
+    </MudCardActions>
+
+
+</MudCard>
+    </MudItem>
+    <MudItem xs="4">
+        <MudCard>
+            <MudCardContent Class="text-center">
+                @* <MudText>Detalles de Errores</MudText> *@
+                <MudButtonGroup Color="Color.Info" Variant="Variant.Outlined" Size="Size.Large" >
+                    <MudButton Style="width:200px;"><MudText>@_textoBotonGrupo</MudText></MudButton>
+                    <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown">
+                        <MudMenuItem OnClick="() => AsignarTextoBoton(0)"> Todo</MudMenuItem>
+                        <MudMenuItem OnClick="() => AsignarTextoBoton(1)">Reservadas</MudMenuItem>
+                        <MudMenuItem OnClick="() => AsignarTextoBoton(2)">Errores</MudMenuItem>
+                        <MudMenuItem OnClick="() => AsignarTextoBoton(3)">Identificadores</MudMenuItem>
+                    </MudMenu>
+                </MudButtonGroup>
+                <MudSimpleTable Hover="true" Dense="true" FixedHeader="true" Style="@(true?"height:450px;":"")">
+                    <thead>
+                        <tr>
+                          
+                            <th>#</th>
+                            <th>Descripcion</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 0;
+                            var cantidadFilas = listaResultado.Count;
+                        }
+                       @*  @foreach (var row in listaResultado) *@
+                        
+                        @for (int index = 0; index < cantidadFilas - 1; index++)
+                        {
+                            var row = listaResultado[index];
+                            i++;
+                            switch (@_textoBotonGrupo)
+                            {
+                                case "Todo":
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@row</td>
+                                    </tr>
+                                    break;
+                                case "Reservadas":
+
+                                    if (row.Contains("Palabra reservada"))
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@row</td>
+                                        </tr>
+                                    }
+                                    break;
+                                case "Errores":
+
+                                    if (row.Contains("Error Lexico"))
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@row</td>
+                                        </tr>
+                                    }
+                                    break;
+                                case "Identificadores":
+
+                                    if (row.Contains("Identificador"))
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@row</td>
+                                        </tr>
+                                    }
+                                    break;
+                            } 
+
+                           @*  <tr>
+                                <td>@i</td>
+                               <td>@row</td>
+                            </tr> *@
+                        }
+                    </tbody>
+         
+                </MudSimpleTable>
+            
+            </MudCardContent>
+    
+
+
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@code {
+    public string ValorTextArea { get; set; }
+    private string _archivoSeleccionado = "";
+    private List<string> listaResultado = new List<string>();
+    private List<int> listaLineasError = new List<int>();
+    private string resultadoFinal = "";
+    private string _textoBotonGrupo = "Todo";
+    //private lineas
+
+
+    protected override void OnInitialized()
+    {
+        //nos sucribimos al evento cambio de valor del text area
+        AppState.OnCambioValorTexto += ManejarValorTextoCambiado;
+        //nos sucribimos al evento nombre de archivo seleccionado
+        AppState.OnNombreArchivoSeleccionadoCambio += ManejarNombreArchivoSeleccionadoqueCambia;
+        // Nos suscrimos al evento cambio archivo para actualizar la lista cuando cambie y tenerla actualizada
+        AppState.OnArchivoCambio += () => StateHasChanged();
+    }
+
+    private void ManejarNombreArchivoSeleccionadoqueCambia()
+    {
+        // Actualizar la variable local con el nombre del archivo seleccionado
+        _archivoSeleccionado = AppState.archivoSeleccionado;
+    }
+
+    private void ManejarValorTextoCambiado()
+    {
+        // Actualiza TextValue cuando cambia en AppState
+        ValorTextArea = AppState.valorTextArea;
+        StateHasChanged();
+    }
+
+    private async Task Analizar()
+    {
+        listaResultado = new List<string>();
+        try
+        {
+            // URL
+            string url = $"/api/lexico/sobrescribir/{_archivoSeleccionado}";
+            var response = await Http.PostAsJsonAsync<string>(url, ValorTextArea);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Listamos resultado de analisis léxico
+                listaResultado = await response.Content.ReadFromJsonAsync<List<string>>();
+                //sacamos el resultado de la ultima fila, para mostrar aparte
+                resultadoFinal = listaResultado[listaResultado.Count - 1];
+
+                if (listaResultado != null)
+                {
+                    foreach (var resultado in listaResultado)
+                    {
+                        if (resultado.Contains("Error Lexico:"))
+                        {
+                            string numeroAlFinal = new string(resultado.TrimEnd().Reverse().TakeWhile(char.IsDigit).Reverse().ToArray());
+                            listaLineasError.Add(int.Parse(numeroAlFinal));
+
+                            Console.WriteLine(numeroAlFinal);
+                        }
+                    }
+                }
+
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error, config => { config.VisibleStateDuration = 3000; });
+            return;
+            
+        }
+    }
+
+    private async void AbrirVentanaDialogo()
+    {
+        var dialog = DialogService.Show<Dialog>("Crear Archivo");
+
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            // Obtenemos el nombre del archivo desde el resultado
+            string nombreArchivo = result.Data.ToString();
+            //enviamos el nombre de archivo para ser creado
+            var response = await Http.PostAsJsonAsync<string>("/api/lexico/archivo/crearnuevo", nombreArchivo!);
+    
+            if (response.IsSuccessStatusCode)
+            {
+                // Obtenemos el nombre del archivo
+                var nombreArchivoCreado = await response.Content.ReadAsStringAsync();
+               //
+                AppState.AsignarArchivo(nombreArchivoCreado.ToString());
+            }else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                Snackbar.Add("El archivo ya existe, por favor revise", Severity.Error, config => { config.VisibleStateDuration = 3000; });
+                return;
+            }
+        }
+
+    }
+    private async Task EliminarArchivo()
+    {
+        if(AppState.archivoSeleccionado == null)
+        {
+            Snackbar.Add("Debes elegir un archivo", Severity.Error, config => { config.VisibleStateDuration = 3000; });
+            return;
+        }
+        try
+        {
+            var response = await Http.DeleteAsync($"/api/lexico/archivo/eliminar/{AppState.archivoSeleccionado}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(await response.Content.ReadAsStringAsync());
+                var msg = await response.Content.ReadAsStringAsync();
+                Snackbar.Add(msg, Severity.Success, config => { config.VisibleStateDuration = 3000; });
+                var nuevaLista = await Http.GetFromJsonAsync<List<string>>("/api/lexico");
+                ValorTextArea = "";
+                listaResultado = new List<string>();
+                resultadoFinal = "";
+                //asignamos los valores de la nueva lista, para que se actualice el menu
+                AppState.AsignarArchivo(nuevaLista);
+                return;
+               
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                var msg = await response.Content.ReadAsStringAsync();
+                Snackbar.Add(msg, Severity.Error, config => { config.VisibleStateDuration = 3000; });
+                return;
+               
+            }
+            else
+            {
+                var msg = await response.Content.ReadAsStringAsync();
+                Snackbar.Add(msg, Severity.Error, config => { config.VisibleStateDuration = 3000; });
+                return;
+                
+            }
+        }
+        catch (Exception ex)
+        {
+           
+            Snackbar.Add($"Error al eliminar el archivo: {ex.Message}", Severity.Error, config => { config.VisibleStateDuration = 3000; });
+            return;
+        }
+    }
+    private void AsignarTextoBoton(int id)
+    {
+        if(listaResultado != null)
+        {
+            switch (id)
+            {
+                case 0:
+                    _textoBotonGrupo = "Todo";
+                    break;
+                case 1:
+                    _textoBotonGrupo = "Reservadas";
+
+                    break;
+                case 2:
+                    _textoBotonGrupo = "Errores";
+                    break;
+                case 3:
+                    _textoBotonGrupo = "Identificadores";
+                    break;
+            }
+            
+        }
+
+    }
+
+}

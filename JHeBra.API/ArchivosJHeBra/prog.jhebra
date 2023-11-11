@@ -1,0 +1,7 @@
+#esta es una clase basica
+_clase{ $
+_principal(){
+_entero=-1; $
+_real=0.4;
+}
+}

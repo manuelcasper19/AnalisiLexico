@@ -1,0 +1,17 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudTextField @bind-Value="_nombreArchivo" T="string" Label="Nombre de clase" Variant="Variant.Outlined"></MudTextField>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Crear</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialogo { get; set; }
+    private string _nombreArchivo = "";
+
+    void Submit() => MudDialogo.Close(DialogResult.Ok(_nombreArchivo));
+    void Cancel() => MudDialogo.Cancel();
+}
